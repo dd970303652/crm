@@ -112,7 +112,7 @@
 <!--导入jQuery文件 -->
 <script type="text/javascript" src="{% static 'jquery-easyui-1.3.3/jquery.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'jquery-easyui-1.3.3/jquery.cookie.js' %}"></script>
-<script type="text/javascript"></script>
+<script type="text/javascript">
     //点击注册显示div,隐藏登录div
      $('#reg_a').on('click', function () {
         $('#log-in').hide();
@@ -125,10 +125,215 @@
         $('#log-in').show();
     });
 
+    // 验证用户名 必须字母加数字
+    function check_username() {
+        var flag = false;
 
+        // 获取用户名
+        var username = $('#reg_username').val();
 
+        // 验证用户名 字母或者字母加数字必须字母开头 最少4位 最多16位
+        var reg = /^[a-zA-Z][a-zA-Z0-9]{4,16}$/
 
+        if (!reg.test(username)) {
+            $('#reg_span').html('用户名必须字母开头 4-16位');
+            return flag;
+        }
 
+        // 合法后清空提示
+        $('#reg_span').html('');
 
+        // 发送ajax请求验证用户名唯一
+        $.ajax({
+            'type': 'POST',
+            'url': '{% url 'login_detail:unique_username' %}',
+            'async': false,
+            'data': {
+                'csrfmiddlewaretoken': $.cookie('csrftoken'),
+                'username': username
+            },
+            'dataType': 'json',
+            'success': function (result) {
+                // 如果是400 设置为false返回
+                if (400 == result.code) {
+                    flag = false;
+                    $('#reg_span').html(result.msg);
+                }
+
+                // 如果是200 正常显示
+                if (200 == result.code) {
+                    flag = true;
+                    $('#reg_span').html(result.msg);
+                }
+            },
+            'error': function (result) {
+                console.log(result);
+            }
+        });
+        return flag;
+    }
+    $('#reg_username').on('blur', check_username);
+
+    // 验证邮箱格式 丢失焦点事件
+    function check_email() {
+        var flag = false;
+
+        // 获取邮箱
+        var email = $('#reg_email').val().trim();
+
+        // 非空判断
+        if (undefined == email || '' == email) {
+            $('#reg_span').html('邮箱不能为空');
+            return flag;
+        }
+
+        // 验证邮箱
+        var reg = /^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/;
+        if (!reg.test(email)) {
+            $('#reg_span').html('请输入正确的邮箱格式');
+            return flag;
+        }
+
+        // 合法后清空提示
+        $('#reg_span').html('');
+
+        // 发送ajax请求验证用户名唯一
+        $.ajax({
+            'type': 'POST',
+            'url': '{% url 'login_detail:unique_email' %}',
+            'async': false,
+            'data': {
+                'csrfmiddlewaretoken': $.cookie('csrftoken'),
+                'email': email
+            },
+            'dataType': 'json',
+            'success': function (result) {
+                // 如果是400 设置为false返回
+                if (400 == result.code) {
+                    flag = false;
+                    $('#reg_span').html(result.msg);
+                }
+
+                // 如果是200 正常显示
+                if (200 == result.code) {
+                    flag = true;
+                    $('#reg_span').html(result.msg);
+                }
+            },
+            'error': function (result) {
+                console.log(result);
+            }
+        });
+        return flag;
+    }
+    $('#reg_email').on('blur', check_email);
+
+    // 验证密码 必须数字大小写字母特殊符号组成 最少8位 最多16位
+    function check_password() {
+        // 获取密码
+        var pwd = $('#reg_pwd').val();
+
+        // 判断密码是否满足长度
+        if (pwd.length < 8 || pwd.length > 16) {
+            $('#reg_span').html('密码长度必须在8~16位之间');
+            return false;
+        }
+
+        // 验证密码
+        var reg = /^(?=.*?[a-z])(?=.*?[A-Z])(?=.*?\d)(?=.*?[#@*&.])[a-zA-Z\d#@*&.]{8,16}$/;
+
+        if (!reg.test(pwd)) {
+            $('#reg_span').html('请输入正确的密码');
+            return false;
+        }
+
+        // 合法后清空提示
+        $('#reg_span').html('');
+        return true;
+    }
+    $('#reg_pwd').on('blur', check_password);
+
+    // 重复密码 获取密码的值进行比较
+    function check_password2() {
+        // 获取密码
+        var pwd = $('#reg_pwd').val().trim();
+        // 获取重复密码
+        var pwd2 = $('#reg_pwd2').val().trim();
+
+        // 非空判断
+        if (undefined == pwd2 || '' == pwd2) {
+            $('#reg_span').html('重复密码不能为空');
+            return false;
+        }
+
+        // 进行比较
+        if (pwd2 != pwd) {
+            $('#reg_span').html('两次密码不一致');
+            return false;
+        }
+
+        // 合法后清空提示
+        $('#reg_span').html('');
+        return true;
+    }
+    $('#reg_pwd2').on('blur', check_password2);
+
+    // 点击注册按钮再次验证数据合法性
+    $('#reg_btn').on('click', function () {
+        // 点击注册以后置灰按钮
+        $('#reg_btn').attr("disabled", "true");
+
+        var flag = check_username();
+        if (!flag) {
+            return;
+        }
+        var flag = check_email();
+        if (!flag) {
+            return;
+        }
+        var flag = check_password();
+        if (!flag) {
+            return;
+        }
+        var flag = check_password2();
+        if (!flag) {
+            return;
+        }
+
+        // 合法的话 发送邮件 激活账号
+        // 获取用户名
+        var username = $('#reg_username').val();
+        // 获取邮箱
+        var email = $('#reg_email').val().trim();
+        // 获取密码
+        var password = $('#reg_pwd').val().trim();
+        $.ajax({
+            'type': 'POST',
+            'url': '{% url 'login_detail:email_send' %}',
+            'async': false,
+            'data': {
+                'csrfmiddlewaretoken': $.cookie('csrftoken'),
+                'email': email,
+                'username': username,
+                'password': password
+            },
+            'dataType': 'json',
+            'success': function (result) {
+                // 如果是400 设置为false返回
+                if (400 == result.code) {
+                    $('#reg_span').html(result.msg);
+                }
+
+                // 如果是200 正常显示
+                if (200 == result.code) {
+                    $('#reg_span').html(result.msg);
+                }
+            },
+            'error': function (result) {
+                console.log(result);
+            }
+        });
+    });
+</script>
 </body>
 </html>
