@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+{# 导入静态资源 #}
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>登录</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <!-- 导入css文件 -->
+    <link href="{% static 'assets/css/icons.css' %}" rel="stylesheet"/>
+    <link href="{% static 'assets/css/bootstrap.css' %}" rel="stylesheet"/>
+    <link href="{% static 'assets/css/main.css' %}" rel="stylesheet"/>
+
+</head>
+<body class="login-page">
+{# csrf保护 #}
+{% csrf_token %}
+<!-- Start #login -->
+<div id="login" class="animated bounceIn">
+    <div class="login-wrapper">
+        <ul id="myTab" class="nav nav-tabs nav-justified bn">
+            <li>
+                <a data-toggle="tab" id="login_a" style="cursor: pointer">登录</a>
+            </li>
+            <li class="">
+                <a data-toggle="tab" id="reg_a" style="cursor: pointer">注册</a>
+            </li>
+        </ul>
+        <div id="myTabContent" class="tab-content bn">
+            <div class="tab-pane fade active in" id="log-in">
+                <form class="form-horizontal mt10" action="index.html" id="login-form" role="form">
+                    <div class="form-group">
+                        <div class="col-lg-12">
+                            <input type="text" name="email" id="email" class="form-control left-icon"
+                                   placeholder="请输入邮箱">
+                            <i class="ec-user s16 left-input-icon"></i>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-lg-12">
+                            <input type="password" name="password" id="password" class="form-control left-icon"
+                                   placeholder="请输入密码">
+                            <i class="ec-locked s16 left-input-icon"></i>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-8">
+                            <!-- col-lg-12 start here -->
+                            <label class="checkbox">
+                                <input type="checkbox" name="remember" id="remember" value="option">记住密码 ?
+                            </label>
+                        </div>
+                        <!-- col-lg-12 end here -->
+                        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-4">
+                            <!-- col-lg-12 start here -->
+                            <button class="btn btn-success pull-right" type="button">登录</button>
+                        </div>
+                        <!-- col-lg-12 end here -->
+                    </div>
+                </form>
+            </div>
+            <div class="tab-pane fade active in" id="register" style="display: none">
+                <form class="form-horizontal mt20" action="#" id="register-form" role="form">
+                    <b><span id="reg_span"></span></b>
+                    <div class="form-group">
+                        <div class="col-lg-12">
+                            <!-- col-lg-12 start here -->
+                            <input id="reg_username" name="email" type="email" class="form-control left-icon"
+                                   placeholder="请输入用户名 (字母开头，字母加数字)">
+                            <i class="ec-user s16 left-input-icon"></i>
+                        </div>
+                        <!-- col-lg-12 end here -->
+                    </div>
+                    <div class="form-group">
+                        <div class="col-lg-12">
+                            <!-- col-lg-12 start here -->
+                            <input id="reg_email" name="email" type="email" class="form-control left-icon"
+                                   placeholder="请输入邮箱">
+                            <i class="ec-mail s16 left-input-icon"></i>
+                        </div>
+                        <!-- col-lg-12 end here -->
+                    </div>
+                    <div class="form-group">
+                        <div class="col-lg-12">
+                            <!-- col-lg-12 start here -->
+                            <input id="reg_pwd" type="password" class="form-control left-icon" name="password"
+                                   placeholder="请输入密码  (必须数字字母大小写特殊符号)">
+                            <i class="ec-locked s16 left-input-icon"></i>
+                        </div>
+                        <!-- col-lg-12 end here -->
+                        <div class="col-lg-12 mt15">
+                            <!-- col-lg-12 start here -->
+                            <input type="password" class="form-control left-icon" id="reg_pwd2"
+                                   name="confirm_passowrd" placeholder="请再次输入密码">
+                            <i class="ec-locked s16 left-input-icon"></i>
+                        </div>
+                        <!-- col-lg-12 end here -->
+                    </div>
+                    <div class="form-group">
+                        <div class="col-lg-12">
+                            <!-- col-lg-12 start here -->
+                            <input type="button" class="btn btn-success btn-block" id="reg_btn" value="注册"></input>
+                        </div>
+                        <!-- col-lg-12 end here -->
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- End #.login-wrapper -->
+</div>
+<!--导入jQuery文件 -->
+<script type="text/javascript" src="{% static 'jquery-easyui-1.3.3/jquery.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'jquery-easyui-1.3.3/jquery.cookie.js' %}"></script>
+<script type="text/javascript"></script>
+    //点击注册显示div,隐藏登录div
+     $('#reg_a').on('click', function () {
+        $('#log-in').hide();
+        $('#register').show();
+    });
+
+    // 点击登录显示登录div
+    $('#login_a').on('click', function () {
+        $('#register').hide();
+        $('#log-in').show();
+    });
+
+
+
+
+
+
+</body>
+</html>
