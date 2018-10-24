@@ -77,7 +77,7 @@ DATABASES = {
         # 'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
         'ENGINE': 'django.db.backends.mysql',  # 数据库连接方式
         'NAME': 'crm',  # 数据库名
-        'USER': 'Index',  # 数据库连接用户名
+        'USER': 'root',  # 数据库连接用户名
         'PASSWORD': 'dd123456',  # 数据库密码
         'HOST': '127.0.0.1',  # 数据库连接 ip
         'PORT': '3306',  # 端口
