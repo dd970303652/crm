@@ -27,7 +27,7 @@ def unique_username(request):
         #如果存在用户则返回页面json
         return JsonResponse({'code':400,'msg':'用户名已存在'})
     except User.DoesNotExist as e:
-        return JsonResponse({'code':200,'msg':'注册成功!'})
+        return JsonResponse({'code':200,'msg':'用户名可以使用!'})
 
 #验证邮箱是否唯一
 def unique_email(request):
@@ -39,7 +39,7 @@ def unique_email(request):
         #如果存在用户则返回页面json
         return JsonResponse({'code': 400, 'msg': '邮箱已存在'})
     except User.DoesNotExist as e:
-        return JsonResponse({'code': 200, 'msg': '注册成功!'})
+        return JsonResponse({'code': 200, 'msg': '邮箱可以使用!'})
 
 
 def format_mail(addr):
@@ -69,7 +69,7 @@ def email_send(request):
         #使用md5加密
         u_pwd=md5(u_pwd.encode(encoding='utf-8')).hexdigest()
         #激活码处理
-        code=''.join(str(uuid.uuid4())).split('-')
+        code=''.join(str(uuid.uuid4()).split('-'))
         #10分钟后的时间戳
         td=timedelta(minutes=10)
         ts=datetime.now()+td
@@ -99,7 +99,7 @@ def email_send(request):
                         ----------------------------------------------------------------------<br>
                         如果您是 上海尚学堂CRM 的新用户，或在修改您的注册 Email 时使用了本地址，我们需要对您的地址有效性进行验证以避免垃圾邮件或地址被滥用。<br>
                         您只需点击下面的链接激活帐号即可：<br>
-                        <a href="http://www.crm.com/active_accounts/?username={}&code={}&timestamp={}">http://www.crm.com/active_accounts/?username={}&amp;code={}&amp;timestamp={}</a><br/>
+                        <a href="http://127.0.0.1:8000/action_accounts/?username={}&code={}&timestamp={}">http://127.0.0.1:8000/action_accounts/?username={}&amp;code={}&amp;timestamp={}</a><br/>
                         感谢您的访问，祝您生活愉快！<br>
                         此致<br>
                          上海尚学堂 管理团队.
@@ -107,15 +107,18 @@ def email_send(request):
                 </body>
             </html>
         '''.format(username,code,ts,username,code,ts)
+        print(html)
         msg = MIMEText(html, 'html', 'utf-8')
 
         # 标准邮件需要三个头部信息: From  To  和subject
         # 设置发件人和收件人的信息
         # 比如:尚学堂<java_mail01@163.com>
         # 发件人
-        msg['From'] = format_mail('士官长<%s>' % send_email)
-        # 收件人
-        msg['TO'] = format_mail(recv_email)
+        msg['From'] = format_mail(u'士官长<%s>' % send_email)
+        # 收件人名称
+        to_name = username
+        #收件人
+        msg['TO'] = format_mail(u'{}<%s>'.format(to_name) % recv_email)
         # 主题
         msg['Subject'] = str(Header('晚上搞起啊!', 'utf-8'))
         # -------------------构建邮件对象结束------------------
