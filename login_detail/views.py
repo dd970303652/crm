@@ -107,7 +107,6 @@ def email_send(request):
                 </body>
             </html>
         '''.format(username,code,ts,username,code,ts)
-        print(html)
         msg = MIMEText(html, 'html', 'utf-8')
 
         # 标准邮件需要三个头部信息: From  To  和subject
