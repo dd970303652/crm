@@ -160,7 +160,7 @@ def action_accounts(request):
         if now_ts>int(ts):
             #链接失效,返回提示信息并删除数据库信息
             user.delete()
-            return HttpResponse('<h1>此链接已失效,请重新注册&nbsp;&nbsp;<a href="http://www.crm.com/login_register/">上海尚学堂CRM系统</a></h1>')
+            return HttpResponse('<h1>此链接已失效,请重新注册&nbsp;&nbsp;<a href="http://127.0.0.1:8000/login_register/">上海尚学堂CRM系统</a></h1>')
         #清除激活码
         user.code=''
         #设置账号有效
@@ -169,11 +169,11 @@ def action_accounts(request):
         user.save()
 
         #返回提示信息
-        return HttpResponse( '<h1>帐号激活成功，请前往系统登录&nbsp;&nbsp;<a href="http://www.crm.com/login_register/">上海尚学堂CRM系统</a></h1>')
+        return HttpResponse( '<h1>帐号激活成功，请前往系统登录&nbsp;&nbsp;<a href="http://127.0.0.1:8000/login_register/">上海尚学堂CRM系统</a></h1>')
     except Exception as e:
         #判断是否是链接过期导致的错误
         if isinstance(e,User.DoesNotExist):
-            return HttpResponse('<h1>该链接已失效，请重新注册&nbsp;&nbsp;<a href="http://www.crm.com/login_register/">上海尚学堂CRM系统</a></h1>')
+            return HttpResponse('<h1>该链接已失效，请重新注册&nbsp;&nbsp;<a href="http://127.0.0.1:8000/login_register/">上海尚学堂CRM系统</a></h1>')
         return HttpResponse('<h1>不好意思，网络出现了波动，激活失败，请重新尝试</h1>')
 
 
